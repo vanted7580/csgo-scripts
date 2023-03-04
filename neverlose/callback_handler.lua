@@ -1,44 +1,35 @@
-
-_DEBUG = true
-
-local __main__ = function()
-
-    local menu_handler = {
-        ui_elements = {},
-        init = function(self)
-            
-        end,
-        menu_update = function(self)
-            print(1)
+callback_handler = 
+{
+    callbacks = {},
+    add_callback = function(self, event, func, prio)
+        prio = math.default(prio, 50) -- defualt priority
+        self.callbacks[event] = math.default(self.callbacks[event], {})
+        table.insert(self.callbacks[event], {func, prio})
+    end,
+    sort_algorithm = function(item_a, item_b)
+        return item_a[2] > item_b[2]
+    end,
+    init_event = "init",
+    start = function(self, sort)
+        sort = math.default(sort, true)
+        if sort then
+            table.sort(self.callbacks[self.init_event], self.sort_algorithm)
         end
-    }
-
-    local callback_handler = 
-    {
-        callbacks = {},
-        add_callback = function(self, e, fn)
-            if self.callbacks[e] == nil then
-                self.callbacks[e] = {}
-            end
-            table.insert(self.callbacks[e], fn)
-        end,
-        init = function(self)
-            for key, content in pairs(self.callbacks) do
-                events[key]:set(function(...)
-                    for _, fn in ipairs(content) do
-                        fn(...)
-                    end
-                end)
-            end
+        for _, data in ipairs(self.callbacks[self.init_event]) do
+            data[1]()
         end
-    }
-
-    callback_handler:add_callback('render', menu_handler.menu_update)
-
-
-    callback_handler:init()
-    menu_handler:init()
-
-end
-
-__main__()
+        for event, content in pairs(self.callbacks) do
+            if event == self.init_event then
+                goto continue
+            end
+            if sort then
+                table.sort(content, self.sort_algorithm)
+            end
+            for _, data in ipairs(content) do
+                events[event]:set(data[1])
+            end
+            ::continue::
+        end
+        self.callbacks = {}
+    end
+}
