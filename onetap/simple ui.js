@@ -1,4 +1,6 @@
 
+# 陈年老代码，高一时不懂事写的玩的
+
 UI.AddSubTab( ["Config", "SUBTAB_MGR"], ".CC settings" );
 
 UI.AddDropdown( ["Config",".CC settings",".CC settings"], "Theme", ["Dark","Light"], 0);
