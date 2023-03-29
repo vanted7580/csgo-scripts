@@ -1,5 +1,5 @@
 
-# 陈年老代码，高一时不懂事写的玩的
+// 陈年老代码，高一时不懂事写的玩的
 
 UI.AddSubTab( ["Config", "SUBTAB_MGR"], ".CC settings" );
 
